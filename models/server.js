@@ -10,6 +10,8 @@ class Server {
         this.app = express();   // app de express como propiedad
         // hacer visible el puerto
         this.port = process.env.PORT;  // para no usar env.port 
+        // crear string para optmizar coodigo 
+        this.usuariosPath = '/api/usuarios';
 
         // aqui van los middlewares
         this.middlewares();
@@ -26,7 +28,7 @@ class Server {
     routes() {
 
 
-        // get    
+        /* // get    
         this.app.get('/api', (req, res) => {
            // res.send('Hello World');
            res.json({
@@ -56,7 +58,9 @@ class Server {
             res.json({
                 msg:'delete API'
             });
-         });
+         }); */
+
+         this.app.use(this.usuariosPath, require('../routes/usuarios'));
     }
 
     // metodo para escuchar    
