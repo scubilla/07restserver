@@ -19,4 +19,5 @@ const Server = require('./models/server');
 // ahora debemos INSTANCIAR Y LLAMAR nuestra clase
 const server = new Server();
 
+// y luego lanzamos el servidor
 server.listen();
