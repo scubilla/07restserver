@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { dbConnection } = require('../database/config');
 
 
 
@@ -13,6 +14,11 @@ class Server {
         // crear string para optmizar coodigo 
         this.usuariosPath = '/api/usuarios';
 
+        // viene de seccion 9
+        // conectar base de datos
+        this.conectarDB();
+
+
         // aqui van los middlewares
         this.middlewares();
 
@@ -22,6 +28,12 @@ class Server {
         this.routes();  // 2 luego se llama el metodo
 
     }
+
+    // crear metodo asincrono para conetaar db
+    async conectarDB() {
+        await dbConnection();
+    }
+
 
     // 1 creamos un metodo para manejar las rutas
     // y manejar luego nuestros endpoints
