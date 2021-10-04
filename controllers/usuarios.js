@@ -2,10 +2,11 @@
 const { response } = require('express');
 // requerir para encryptar
 const bcryptjs = require('bcryptjs');
-
+const { validationResult } = require('express-validator');
 
 // secc 9 para grabar importamos el modelo. mayuscula xq es instancia
 const Usuario = require('../models/usuario');
+
 
 
 const usuariosGet = (req, res = response) => {
@@ -39,6 +40,14 @@ const usuariosPut = (req, res = response) => {
 
 // seccc 9 convertir el post a async
 const usuariosPost = async (req, res = response) => {
+
+    // confirmar los errores de los midlewares check, si nbo es vacio eviar 400 y el error
+    // a rtaves de validation result
+    const errors = validationResult(req);
+    if ( !errors.isEmpty() ) {
+        return res.status(400).json(errors);
+    }
+
     
     // body vienen del request, se debe limpiar, desestructurar
     // para usar solo lo q se necesita
@@ -52,7 +61,14 @@ const usuariosPost = async (req, res = response) => {
     // aora enviamos un objeto con la desestructuracion
     const usuario = new Usuario({ nombre, correo, password, rol });
     
-    // antes de encrytar , verificar q existe el correo
+    // antes de encrytar , verificar q existe el correo, buscara un objeto
+    const existeEmail = await Usuario.findOne({ correo });
+    // si existe email es error, se duplico y no se puede
+    if ( existeEmail ) {  
+        return res.status(400).json({       // se coloca return para salir
+            msg: 'Ese correo ya existe!'
+        });
+    }
    
     
    // encriptar la contraseña con 10 saltos, se toma el pass del obj ususario
