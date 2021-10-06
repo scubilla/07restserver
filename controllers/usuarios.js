@@ -43,10 +43,8 @@ const usuariosPost = async (req, res = response) => {
 
     // confirmar los errores de los midlewares check, si nbo es vacio eviar 400 y el error
     // a rtaves de validation result
-    const errors = validationResult(req);
-    if ( !errors.isEmpty() ) {
-        return res.status(400).json(errors);
-    }
+    // luego se corta cuando se crea la carptea middlewares 
+    
 
     
     // body vienen del request, se debe limpiar, desestructurar

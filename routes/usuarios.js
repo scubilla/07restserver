@@ -1,6 +1,7 @@
 // desestructuramos de expres
 const { Router } = require('express');
 const { check } = require('express-validator');
+const { validarCampos } = require('../controllers/middlewares/validar-campos');
 
 const { usuariosGet,
         usuariosPut,
@@ -22,7 +23,12 @@ router.put('/:id', usuariosPut );
   // hacer un check por cada campo del body . cargarlos en un arreglo
   // como segundo arg se envian los midd check, varios usar arreglo
   router.post('/',[
-    check('correo', 'El correo no es valido').isEmail(), 
+    check('nombre', 'El nombre es obligatorio').not().isEmpty(), 
+    check('password', 'El password debe ser mayor a 6 letras').isLength({ min: 6}),
+    check('correo', 'El correo no es valido').isEmail(),
+    check('rol', 'No es un rol valido').isIn(['ADMIN_ROLE', 'USER_ROLE']),
+    // colocar al ultimo el midleware validar campos para revisar los checks
+    validarCampos
   ], usuariosPost );
 
   // delete    
