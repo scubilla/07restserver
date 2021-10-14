@@ -32,6 +32,18 @@ const UsuarioSchema = Schema({
     }    
 });
 
+// para eliminar version y pass m sobreescribiremos el metodo to json
+// usar funcion normal, potque se usara THIS referencia a la instancia, no usar funcion de flecha
+// quitar ambos y cargar en usuario u otro nombre
+
+UsuarioSchema.methods.toJSON = function() {
+    const { __v, password, ...usuario } = this.toObject();
+    return usuario;
+}
+
+
+
+
 // exportar el nombre de la coleccion o tabla, y luego el esquema
 module.exports = model( 'Usuario', UsuarioSchema );
 

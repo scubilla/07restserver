@@ -2,10 +2,11 @@
 const { response } = require('express');
 // requerir para encryptar
 const bcryptjs = require('bcryptjs');
-const { validationResult } = require('express-validator');
+
 
 // secc 9 para grabar importamos el modelo. mayuscula xq es instancia
 const Usuario = require('../models/usuario');
+const usuario = require('../models/usuario');
 
 
 
@@ -25,11 +26,23 @@ const usuariosGet = (req, res = response) => {
     });
  }
 
-const usuariosPut = (req, res = response) => {
+const usuariosPut = async (req, res = response) => {
 
     // recuperar id agregado al put en routes , es una proo del requets
     // const id = req.params.id;    forma
     const { id }  = req.params;
+
+    const  { password, google, ...resto } = req.body; 
+
+    if ( password ) {
+        // escriptar la contraseña
+        const salt = bcryptjs.genSaltSync();
+        usuario.password = bcryptjs.hashSync( password, salt );
+    }
+
+    const usuario = await Usuario.findByIdAndUpdate( id, resto ); 
+
+   // TODO validar contra base de datos
 
     res.json({
         msg:'put API - usuarios put',
@@ -60,13 +73,15 @@ const usuariosPost = async (req, res = response) => {
     const usuario = new Usuario({ nombre, correo, password, rol });
     
     // antes de encrytar , verificar q existe el correo, buscara un objeto
-    const existeEmail = await Usuario.findOne({ correo });
+    // mover a helpers. db validaciones 
+    
+    /* const existeEmail = await Usuario.findOne({ correo });
     // si existe email es error, se duplico y no se puede
     if ( existeEmail ) {  
         return res.status(400).json({       // se coloca return para salir
             msg: 'Ese correo ya existe!'
         });
-    }
+    } */
    
     
    // encriptar la contraseña con 10 saltos, se toma el pass del obj ususario
