@@ -5,7 +5,7 @@ const { check } = require('express-validator');
 //const Role = require('../models/role');    va a helpers
 
 const { validarCampos } = require('../controllers/middlewares/validar-campos');
-const { esRoleValido, emailExiste } = require('../helpers/db-validators');
+const { esRoleValido, emailExiste, existeUsuarioPorID } = require('../helpers/db-validators');
 
 const { usuariosGet,
         usuariosPut,
@@ -22,7 +22,19 @@ router.get('/', usuariosGet );
  // put  
 //router.put('/', usuariosPut );
 // para tomar parametros y query
-router.put('/:id', usuariosPut );
+
+// hacemos un middleware check para validar que el "id" indicado sea el de mongo
+// usamos ismongoid? con el check
+// luego se coloca la funcion validar campos
+router.put('/:id',[
+  check('id', 'No es un ID valido').isMongoId(),
+  // aora crear un custo para llamar a existeUsuarioporID
+  check('id').custom(existeUsuarioPorID), 
+  check('rol').custom( esRoleValido ),
+  validarCampos
+], usuariosPut );
+
+
 
   // post    
   // hacer validaciones de checkeo del express validator antes de enviar el post

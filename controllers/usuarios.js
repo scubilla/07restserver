@@ -32,22 +32,26 @@ const usuariosPut = async (req, res = response) => {
     // const id = req.params.id;    forma
     const { id }  = req.params;
 
-    const  { password, google, ...resto } = req.body; 
+    // desestructurar para saber q no kiero actualizar
+    const  { _id, password, google, correo, ...resto } = req.body; 
 
+    // TODO validar contra base de datos
+    // si password existe, deseo actualzar contraseña
     if ( password ) {
         // escriptar la contraseña
         const salt = bcryptjs.genSaltSync();
-        usuario.password = bcryptjs.hashSync( password, salt );
+        resto.password = bcryptjs.hashSync( password, salt );
     }
 
+    // luego de ecrptar, se actualiza el registro
+    // busca por el id y actualiza todo lo q se encuentre en resto
     const usuario = await Usuario.findByIdAndUpdate( id, resto ); 
-
-   // TODO validar contra base de datos
 
     res.json({
         msg:'put API - usuarios put',
         // agregar id traido del put
-        id
+        //id   se cambia por usuario para mostrar todo
+        usuario 
     });
 }
 

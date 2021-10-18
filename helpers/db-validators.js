@@ -19,10 +19,19 @@ const emailExiste = async( correo = '') => {
     } 
 }
 
+// validacion para usuario id de mongo validao y luego importar desde routes
+const existeUsuarioPorID = async( id ) => {
+    const existeUsuario = await Usuario.findById( id );
+    // si no existe id, tirar un error
+    if ( !existeUsuario ) {  
+        throw new Error(`El id  ${ id } no existe`);
+    } 
+}
 
 
 
 module.exports = {
     esRoleValido,
-    emailExiste
+    emailExiste,
+    existeUsuarioPorID
 }
